@@ -1,5 +1,7 @@
 const mongoose = require('../db');
 const mongooseDelete = require('mongoose-delete');
+const bcrypt = require("bcrypt");
+const saltRounds = 8;
 
 // Define User Schema
 const userSchema = new mongoose.Schema({
@@ -32,6 +34,28 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
    }
 );
+
+//comparing the hash passwords
+userSchema.statics.findByCredentials = async function (username, password) {
+    const user = await this.findOne({username});
+    if (!user) {
+      throw { message: "User not found" };
+    }
+    console.log(password,user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      throw { message: "Incorrect Password" };
+    }
+    return user;
+  };
+
+    //hashing the password
+userSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, saltRounds);
+    }
+    next();
+});
 
 // Apply the mongoose-delete plugin to enable soft deletion
 userSchema.plugin(mongooseDelete, { overrideMethods: true });
