@@ -23,3 +23,17 @@ exports.Registration=async(req,res)=>{
 }
 
 
+// to Fetch all the data
+exports.UserInfo=async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.find().select('username firstname lastname email').exec();
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Could not fetch user data' });
+  }
+}
+
