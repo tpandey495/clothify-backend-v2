@@ -2,6 +2,7 @@ const mongoose = require('../db');
 const mongooseDelete = require('mongoose-delete');
 const bcrypt = require("bcrypt");
 const saltRounds = 8;
+const jwt = require("jsonwebtoken");
 
 // Define User Schema
 const userSchema = new mongoose.Schema({
@@ -34,6 +35,13 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
    }
 );
+
+userSchema.methods.generateAuthToken = async function () {
+    const user = this;
+    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
+    return token;
+  };
+  
 
 //comparing the hash passwords
 userSchema.statics.findByCredentials = async function (username, password) {

@@ -74,6 +74,7 @@ exports.updateUser = async (req, res) => {
     }
     res.status(200).json(updatedUser);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Could not update user' });
   }
 }
@@ -89,7 +90,8 @@ exports.login = async (req,res) => {
     let isUser = await User.findByCredentials(username, password);
     if (!isUser)
       return res.status(400).json({error:"user not exist"});
-    res.status(200).json({ user: isUser });
+    let token = await isUser.generateAuthToken();
+    res.status(200).json({ user: isUser ,token:token});
   }
   catch (err) {
      res.status(500).json(err.message);
