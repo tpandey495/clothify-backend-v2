@@ -37,3 +37,24 @@ exports.UserInfo=async (req, res) => {
   }
 }
 
+
+// Delete API
+exports.deleteUser=async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const deleteUser=await User.findByIdAndUpdate(
+      userId,
+      { $set: { deleted: true } },
+      { new: true } 
+    );
+    // If the user doesn't exist
+    if (!deleteUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // If the user is successfully deleted
+    res.status(204).send('user deleted succesfully');
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Could not delete user' });
+  }
+}
