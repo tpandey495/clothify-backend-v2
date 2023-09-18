@@ -12,14 +12,13 @@ exports.Registration = async (req, res) => {
     //Check If user already exist
     let isUser = await User.findOne({ email: req.body.email });
     if (isUser)
-     return   res.status(400).json('user has already account with this email');
+     return  res.status(409).json({error:'user has already account with this email'});
 
     const newUser = new User({ firstname, lastname, username, email, password });
     // Save the user to the database
     await newUser.save();
     res.status(201).json(newUser);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: 'Could not create user' });
   }
 }
@@ -74,7 +73,6 @@ exports.updateUser = async (req, res) => {
     }
     res.status(200).json(updatedUser);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: 'Could not update user' });
   }
 }
@@ -83,11 +81,11 @@ exports.updateUser = async (req, res) => {
 
 exports.login = async (req,res) => {
   try {
-    let {username,password} = req.body;
-    if (!username)
+    let {email,password} = req.body;
+    if (!email)
       res.status(400).json({error:"Please send username"});
-    username = username.toLowerCase();
-    let isUser = await User.findByCredentials(username, password);
+    email = email.toLowerCase();
+    let isUser = await User.findByCredentials(email, password);
     if (!isUser)
       return res.status(400).json({error:"user not exist"});
     let token = await isUser.generateAuthToken();
