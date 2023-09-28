@@ -29,6 +29,7 @@ exports.createProduct = async (req, res) => {
         await newProduct.save();
         res.status(201).json({ message: 'Product created successfully', success: true });
     } catch (error) {
+    console.log(error);
         res.status(400).json({ error: 'Error creating product' });
     }
 }
@@ -42,7 +43,7 @@ exports.getProducts = async (req, res) => {
             .sort({ createdAt: -1 }) // Sort by date in descending order
             .limit(limit).select('name type color size  rating price description imgURL').exec(); // Limit the number of results
         res.status(200).json({ products, success: true });
-    } catch (error) {
+    }catch (error) {
         console.log(error.message)
         res.status(500).json({ error: 'Error retrieving products' });
     }
