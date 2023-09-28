@@ -19,13 +19,14 @@ exports.addtoCart=async(req,res)=>{
 
 exports.cartItems=async(req,res)=>{
    try{
-      const {userid}=req.body;
+    const userid=req?.user?._id;
       if(!userid)
        res.status(400).json({error:"user id is not provided"});
       const cartitem=await Cart.find({user_id:userid}).select('product_id').exec();
       res.status(200).json(cartitem);
    }
    catch(err){
+    console.log(err)
    res.status(500).json({error:"Error retrieving Products"})
   }
 }
