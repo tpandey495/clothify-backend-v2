@@ -1,8 +1,10 @@
 const routers = require('express').Router();
 const userModule=require('../controller/user.controller');
-const multer = require('multer');
 const productModule=require('../controller/product.controller');
+const cartModule=require('../controller/cart.controller');
+const multer = require('multer');
 const { verifyToken } = require('../middleware/index');
+
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads')
@@ -25,4 +27,7 @@ routers.post("/user/resetpassword",verifyToken,userModule.resetPassword);
 // Product Routes
 routers.post("/product",upload.single('samplefile'),productModule.createProduct);
 routers.get("/product",productModule.getProducts);
+// Cart Routes
+routers.post("/cart",verifyToken,cartModule.addtoCart);
+routers.get("/cart",verifyToken,cartModule.cartItems);
 module.exports=routers;
