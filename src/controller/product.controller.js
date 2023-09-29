@@ -51,3 +51,17 @@ exports.getProducts = async (req, res) => {
 
 
 
+exports.getProductsById=async(req,res)=>{
+   try{
+      const productid=req.query["productid"];
+      if(!productid)
+       return res.status(400).json({error:"Send Productid"});
+      const product=await Product.find({_id:productid}).select('name type color size description imgURL').exec();
+      res.status(200).json(product);
+   }catch(err){
+      res.status(500).json({error:'error retierving product'});
+   }
+}
+
+
+

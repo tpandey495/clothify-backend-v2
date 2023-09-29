@@ -12,7 +12,6 @@ exports.addtoCart=async(req,res)=>{
    res.status(200).json({message:'Item added succesfuly in the cart'});
  }
  catch(error){
-    console.log(error.message);
     res.status(500).json(({error:"Error retrieving Products"}));
  }
 }
@@ -26,7 +25,6 @@ exports.cartItems=async(req,res)=>{
       res.status(200).json(cartitem);
    }
    catch(err){
-    console.log(err)
    res.status(500).json({error:"Error retrieving Products"})
   }
 }

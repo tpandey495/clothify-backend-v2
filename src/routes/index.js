@@ -27,6 +27,7 @@ routers.post("/user/resetpassword",verifyToken,userModule.resetPassword);
 // Product Routes
 routers.post("/product",upload.single('samplefile'),productModule.createProduct);
 routers.get("/product",productModule.getProducts);
+routers.get("/productbyid",productModule.getProductsById);
 // Cart Routes
 routers.post("/cart",verifyToken,cartModule.addtoCart);
 routers.get("/cart",verifyToken,cartModule.cartItems);
