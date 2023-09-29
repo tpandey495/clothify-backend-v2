@@ -33,15 +33,35 @@ exports.createProduct = async (req, res) => {
         res.status(400).json({ error: 'Error creating product' });
     }
 }
-
+exports.getProductbycategory=async (req, res) => {
+    try {
+        const type= req.param.type||1;
+        const limit = parseInt(req.query.limit) || 10; // Default limit is 10
+        const products = await Product.find({type:type})
+            .sort({ createdAt: -1 }) // Sort by date in descending order
+            .limit(limit).select('name type color size  rating price description imgURL').exec(); // Limit the number of results
+        res.status(200).json({ products, success: true });
+    }catch (error) {
+        res.status(500).json({ error: 'Error retrieving products' });
+    }
+}
 
 // Get products ordered by date with a limit
 exports.getProducts = async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 10; // Default limit is 10
-        const products = await Product.find()
+        const type=req.query.type;
+        let products=[];
+        if(!type){
+         products=await Product.find()
             .sort({ createdAt: -1 }) // Sort by date in descending order
-            .limit(limit).select('name type color size  rating price description imgURL').exec(); // Limit the number of results
+            .limit(limit).select('name type color size  rating price description imgURL').exec(); 
+        }
+        else{
+            products=await Product.find({type:type})
+            .sort({ createdAt: -1 }) // Sort by date in descending order
+            .limit(limit).select('name type color size  rating price description imgURL').exec(); 
+        }
         res.status(200).json({ products, success: true });
     }catch (error) {
         console.log(error.message)
@@ -64,16 +84,3 @@ exports.getProductsById=async(req,res)=>{
 }
 
 
-
-exports.getProductbycategory=async (req, res) => {
-    try {
-        const type= req.query.type||1;
-        const limit = parseInt(req.query.limit) || 10; // Default limit is 10
-        const products = await Product.find({type:type})
-            .sort({ createdAt: -1 }) // Sort by date in descending order
-            .limit(limit).select('name type color size  rating price description imgURL').exec(); // Limit the number of results
-        res.status(200).json({ products, success: true });
-    }catch (error) {
-        res.status(500).json({ error: 'Error retrieving products' });
-    }
-}
